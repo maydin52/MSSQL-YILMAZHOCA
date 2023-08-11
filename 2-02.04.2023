@@ -1,0 +1,116 @@
+--Veritabaný(Database)
+--Verilerin tutulduðu(!!!) yapý...
+--Veriler saklamak marifet deðil...
+
+--1960 lý yýllarda IBM de calisan say adi Codd olan kiþi tarafýndan
+--RDBMS(Relational Database Management Systems)
+--Bir veritabanýnda veriler Table(Tablo) denilen yapýlarda tutulur...
+--Relation(Ýliþki)
+ --  1-1  Birebir
+ --  1-M  Bir e çok
+ --  M-M  Çok a Çok
+
+ --SQL(Structured Query Language)
+ --Yapýsal Sorgulama Dili
+
+ --T-SQL =>SQL Server da => Transact SQL
+ --DML(Data Manupulation Language)
+    --SELECT
+	--INSERT
+	--UPDATE
+	--DELETE
+ --DDL(Data Definition Language)
+   --CREATE
+   --ALTER
+   --DROP
+--Normalde veriler bilgisayarlarda
+  --dosya halinde tutulur...
+
+--Veri Tipleri
+--string => karakterler
+
+--    char(10)
+--   nchar(10) 
+--  varchar(1000)
+-- nvarchar(10)
+--    ...(MAX)
+
+-- var: variable
+-- n  : unicode
+-- MAX:8000 char
+-- n...:MAX: 4000 char
+
+--tam sayilar
+--tinyint  1 byte
+--smallint 2
+--int      4   
+--bigint   8
+
+--ondalik 
+--decimal
+--money 
+
+--bit => 0,1 => true, false
+
+--Tablo satýr ve sutunlardan olusur...
+-- sutunlar o tabloda hangi, verilerin tutulacaðýný soyler..
+-- satirlar => RECORD (Kayýt) olarak soylenir...
+
+---DML komutlarý
+
+USE YZL3440_DB
+
+--Personeller tablosundaki tum personelleri getir...
+--T-SQL Case-Sensitive deðildir..
+SELECT * FROM Personeller
+select * from personeller
+SELect * From Personeller
+
+--Sadece Ad ve Soyadý gelsin
+SELECT Ad,Soyad
+FROM Personeller
+
+--Personelleri Ad'a gore sýrala
+SELECT * FROM Personeller
+ORDER BY Ad
+
+SELECT * FROM Personeller
+ORDER BY Ad ASC
+--ASC:A da Z ye sýrala(Istege baðlý)
+SELECT * FROM Personeller
+ORDER BY Maas DESC
+--DESC : Z den A ya sýrala(buyukten kucuge) 
+
+--Filtreleme
+--PerID si  4 olan personel
+SELECT * FROM Personeller
+WHERE PerID=4
+
+--Adý cevdet olanlar
+SELECT * FROM Personeller
+WHERE Ad ='Cevdet'
+
+--Maas'ý 8700 den buyuk olanlar
+SELECT * FROM Personeller
+WHERE Maas > 8700
+
+--2 li filtreleme
+--Soyadý zafer maasi 9000 den buyuk olanlar
+SELECT * FROM Personeller
+WHERE Soyad ='Zafer' AND Maas > 8700
+
+--Soyadi Zafer veya Korkmaz olanlar..
+SELECT * FROM Personeller
+WHERE Soyad ='Zafer' OR Soyad='Korkmaz'
+
+--AND Dogruluk tablosu
+-- 0 0 | 0  
+-- 0 1 | 0
+-- 1 0 | 0
+-- 1 1 | 1
+
+--OR Dogruluk tablosu
+-- 0 0 | 0  
+-- 0 1 | 1
+-- 1 0 | 1
+-- 1 1 | 1
