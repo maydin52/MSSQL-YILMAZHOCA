@@ -1,0 +1,72 @@
+USE YZL3440_DB
+SELECT * FROM Personeller
+
+--Bolumu Satýs olan personeller
+SELECT * FROM Personeller
+WHERE Bolum='Satýþ'
+--Aktif veritabanýn deðiþtirme
+USE Northwind
+
+--Products tablosundaki tum verileri getir...
+SELECT * FROM Products
+
+--1)Adý pavlova olan urunu bulunuz?
+SELECT * FROM Products
+WHERE ProductName='Pavlova'
+
+--2)ID si 34 olan urun?
+SELECT * FROM Products
+WHERE ProductID=34
+
+--3)Fiyatý 10 dan buyuk olan urunler?
+SELECT * FROM Products
+WHERE UnitPrice>10
+
+--4)Fiyatý 10-20 arasý olan urunleri pahalýdan ucuza listeleyiniz..
+SELECT * FROM Products
+WHERE UnitPrice >=10 AND UnitPrice<=20 
+ORDER BY UnitPrice DESC
+
+SELECT * FROM Products
+WHERE UnitPrice BETWEEN 10 AND 20
+ORDER BY UnitPrice DESC
+
+--5)KategoriID'si 3 olan urunler?
+SELECT * FROM Products
+WHERE CategoryID =3
+
+SELECT ProductID,ProductName,UnitPrice,CategoryID 
+FROM Products
+
+SELECT * FROM Categories
+-----------------------------------
+USE YZL3440_DB
+SELECT * FROM Personeller
+
+--Bir veritabaný sisteminde
+--Bir veri mümkun oldugunca az tekrar etmeli(Min. occurance)
+--Veri tabanýnda veriler tutarlý olmalý...
+
+--JOIN
+--INNER JOIN
+-- Eslesen kayýtlarý getirir...
+USE YZL3440_DB
+SELECT * FROM tbl_Personeller
+SELECT * FROM tbl_Bolumler
+
+--1 Geleneksel Yontem
+SELECT *
+FROM tbl_personeller AS p, tbl_bolumler AS b
+WHERE b.BolumID=p.BolumID
+
+SELECT PErID,Ad, Soyad,Maas,BolumAdi
+FROM tbl_personeller AS p, tbl_bolumler AS b
+WHERE b.BolumID=p.BolumID
+
+--2 MS Yontemi
+SELECT * FROM tbl_Personeller p INNER JOIN 
+tbl_Bolumler b ON p.BolumID = b.BolumID
+
+SELECT PErID,Ad, Soyad,Maas,BolumAdi
+FROM tbl_Personeller p INNER JOIN 
+tbl_Bolumler b ON p.BolumID = b.BolumID
