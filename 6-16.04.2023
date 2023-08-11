@@ -1,1 +1,91 @@
+--RDBMS
+
+--Uygulama Geliþtirme Ortamý =>OOP 
+--Veriyi sakladýðýmýz Ortam  =>RDBMS
+-- Data != Object
+
+CREATE TABLE tbl_Universite(UnID int, FakulteID int, BolumID int, Ad varchar(50))
+
+--Constraints(Kýsýtlar)
+--1)Primary KEY
+--Ayný degerden iki tane olamaz...
+--Bir tabloda birtane PK olabilir...
+--Composite KEY: Bir tabloda birden fazla sutun bir araya gelerek PK olusturabilir...
+--Kural deðiþmez bir tabloda bir tane PK olur...
+
+--2)Secondary(Foreign) KEY
+--Birincil anahtarýn tablosundaki degerlerden baþkasýnýn girilmesine izin vermez...
+--3)Unique
+-- Bir tabloda PK harici benzersiz sutunlar olusturmak istersek; tcNo, sirapisNo, ogrNo,eposta adresi, vb...
+--4)Check
+ --1.Kullaným; degerlerin icerigini kontrol etmek için
+ --2.Kullaným: belirli bir duzene(pattern) zorlamak 
+--5)Default
+ --Kuyllanýcý deger göndermezse tanýmlý degeri kullanýr, gönderirse gelen degeri kullanýr... 
+--6)NULL (!!!)
+ -- Boþ deger gönderip, gönderememeyi kontrol eder...
+ 
+ --KISITLAR
+ --PK, FK
+ --Urun Adi NULL olamaz
+ --Fiyat 0 ve 0 dan kucuk olamaz...
+ --UrunKodu tekrarlanamaz ve ilk iki karakteri Alfa numeric olmalý...
+ --Varsayýlan Renk Siyah olmalý
+ CREATE TABLE kst_Kategoriler(KategoriID int IDENTITY,
+                              KategoriAdi varchar(50))
+ CREATE TABLE kst_Urunler(UrunID int IDENTITY, 
+                          UrunAdi varchar(100),
+						  KategoriID int,
+						  UrunKodu varchar(6),
+						  Fiyat money,
+						  Renk varchar(15))
+
+					
+--Kod ile Kýsýt Olusturma
+DROP TABLE kst_Urunler
+GO
+CREATE TABLE kst_Urunler(UrunID int IDENTITY PRIMARY KEY, 
+                          UrunAdi varchar(100) NOT NULL,
+						  KategoriID int REFERENCES kst_Kategoriler(KategoriID),
+						  UrunKodu varchar(6) UNIQUE CHECK (UrunKodu LIKE '[A-Z][A-Z][0-9][0-9][0-9][0-9]'),
+						  Fiyat money CHECK (fiyat >0),
+						  Renk varchar(15) DEFAULT 'Lacivert')
+
+SELECT UrunID,UrunAdi,FORMAT(Fiyat,'.##') FROM kst_Urunler
+
+--Ondalýklý sayýlardaki kusurat kýsmýn uzunluðunun belirlenmesi...
+CREATE TABLE Deneme(ID int IDENTITY, fiyat1 Decimal(16,2),
+                                     fiyat2 Decimal(16,5))
+
+SELECT * FROM tbl_Personeller
+SELECT * FROM tbl_Bolumler
+
+--JOINs
+--1-CROSS JOIN
+--2-INNER JOIN 
+--3-OUTER JOIN
+  --LEFT
+  --RIGHT
+  --FULL
+--SELF JOIN !!!
+
+SELECT * FROM tbl_Personeller CROSS JOIN tbl_Bolumler
+
+SELECT * FROM tbl_Personeller p INNER JOIN tbl_Bolumler b
+ON p.BolumID = b.BolumID
+
+SELECT * FROM tbl_Personeller p LEFT JOIN tbl_Bolumler b
+ON p.BolumID = b.BolumID
+
+SELECT * FROM tbl_Bolumler b LEFT JOIN tbl_Personeller p
+ON p.BolumID = b.BolumID
+
+SELECT * FROM tbl_Personeller p RIGHT JOIN tbl_Bolumler b
+ON p.BolumID = b.BolumID
+
+SELECT * FROM tbl_Personeller p FULL JOIN tbl_Bolumler b
+ON p.BolumID = b.BolumID
+
+
+SELECT * FROM tbl_Personeller,tbl_Bolumler
 
