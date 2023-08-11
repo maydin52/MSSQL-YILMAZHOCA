@@ -1,1 +1,199 @@
 
+--6) Musteri Sayýsý 5 den az olan ulkelerin once musteri sayýsýnýa gore azalan sonrada ulkeye gore artan sekilde listeleyiniz...
+
+--8) Lino ... musterisinin sipariþlerinde en fazla urun olan 4 siparisin sipari nosunu listeleyiniz...
+--10) En fazla satýs yapýlan uc musteriyi ve siparis numaralarýný listeleyiniz..
+
+USE Northwind
+SELECT * FROM Territories
+SELECT * FROM Customers
+
+--6. sorunun cozumu
+SELECT Country, count(*) MusteriSayýsý FROM Customers
+GROUP BY Country having COUNT(*) < 5
+ORDER BY MusteriSayýsý DESC, Country
+
+--8) Lino ... musterisinin sipariþlerinde en fazla urun olan 4 siparisin siparis snosunu listeleyiniz..
+SELECT TOP 4 od.OrderID,count(*) UrunSayisi FROM Customers c INNER JOIN Orders o
+ON c.CustomerID = o.CustomerID
+INNER JOIN [Order Details] od
+ON o.OrderID = od.OrderID
+WHERE CompanyName='LINO-Delicateses'
+GROUP BY od.OrderID
+ORDER BY UrunSayisi Desc
+
+--10. sorunun cozumu
+SELECT top 3 c.CompanyName, od.OrderID,sum(UnitPrice*Quantity) ToplamFiyat FROM Customers c INNER JOIN Orders o
+ON c.CustomerID = o.CustomerID
+INNER JOIN [Order Details] od
+ON o.OrderID = od.OrderID
+GROUP BY c.CompanyName,od.OrderID
+ORDER BY ToplamFiyat Desc
+
+--VIEW
+--Sorgu SQL server uzerinde saklanýyor...
+--Avantajý
+-- Band geniþliði üzerine olumlu etkisi vardýr....
+-- Güvenlik uzerinde olumlu etkisi var...
+-- SELECT cumeleriyle kullanýlýr...
+
+CREATE VIEW v_urunler
+AS
+SELECT p.ProductID,p.ProductName,c.CategoryName,s.CompanyName 
+FROM Products p INNER JOIN Suppliers s 
+ON p.SupplierID = s.SupplierID INNER JOIN Categories c 
+ON p.CategoryID = c.CategoryID 
+
+SELECT * FROM v_urunler
+
+SELECT * FROM v_urunler
+WHERE CategoryName ='Produce'
+--TOP kullanýmýnda ayný degerden birden fazla varsda onlarýda sonuca almasý için kullanýlýr....
+SELECT TOP 3 WITH TIES *  FROM [Order Details]
+ORDER BY Quantity DESC
+
+---T-SQL de programlama
+---Deðiþken tanýmlama:
+-- Deðiþken:RAM de verileri tutmak için oluþturulan alanlar...
+DECLARE @id int
+DECLARE @no int =333
+SET @id =123
+
+SELECT @id
+SELECT @no
+
+--SART Cumlesi
+--IF
+DECLARE @tip int=3
+IF(@tip =1)
+BEGIN 
+  SELECT 'Tip 1'
+END
+ELSE
+BEGIN 
+  SELECT '1 degil' 
+END
+
+USE AdventureWorks2019
+SELECT ProductID, NAme, ListPrice,Color 
+FROM Production.Product
+
+SELECT ProductID, NAme, ListPrice,Color,
+CASE Color
+  WHEN 'Black' Then 'Siyah'
+  WHEN 'Silver' Then 'Siyah'
+  WHEN 'Blue' Then 'Mavi'
+  ELSE 'Diger Renkler'
+END
+FROM Production.Product
+
+CREATE View v_Durum
+AS
+SELECT ProductID, Name, ListPrice,
+CASE 
+  WHEN ListPrice <100 Then 'Ucuz'
+  WHEN ListPrice >=100 AND ListPrice<500 Then 'Normal'
+  WHEN ListPrice>=500 Then 'Ehh'
+  
+END AS Ozet
+FROM Production.Product
+
+SELECT * FROM v_Durum
+WHERE Ozet ='Ucuz'
+
+--SORU üzerine "bosluk olursa"
+SELECT ProductID, Name, ListPrice,
+CASE 
+  WHEN ListPrice <100 Then 'Ucuz'
+  WHEN ListPrice >=100 AND ListPrice<500 Then 'Normal'
+  WHEN ListPrice>=500 Then 'Ehh'
+  
+END AS Ozet,Color,
+CASE 
+   WHEN Color !='' Then  'bos olamaz...'
+END
+
+FROM Production.Product
+
+USE Northwind
+
+-------------------
+--STORED PROCEDURE(Saklý Procedurler)
+--NSA prosedurler deger dondurmez...
+-- SP sadece INT tipinde deger dondurur...
+
+--Avantajlarý
+-- Hýzlýdýr
+-- Bant geniþliði üzerine olumlu etkisi var...
+-- Güvenlik üzerine oluymlu etkisi var
+
+--Dezavantajlarý...
+--SELECT cumlelerinde kullanýlamaz...
+--Migration durumlarýnda...
+
+--Saklý procedur olusturma
+CREATE PROCEDURE gp_List
+AS
+ SELECT * FROM Products 
+
+ --Var olan saklý proceduru kullanma
+ EXECUTE gp_List
+ EXEC gp_List
+ gp_List
+
+ --INSERT , UPDATE, DELETE
+
+ USE YZL3440_DB
+ SELECT * FROM Personeller
+ALTER PROC gp_PersonelEkle @ad varchar(20),
+                             @soyad varchar(20),
+							 @maas money,
+							 @bolum varchar(20)
+AS
+ INSERT INTO Personeller(ad,soyad,Maas,bolum) VALUES(@ad,@soyad,@maas,@bolum)
+
+ EXEC gp_PersonelEkle 'Selami','Dursun',10000,'Muhasebe'
+
+ --Havale Islemi
+   --Gonderenden parayý dus
+   --Alan kýsýye ekle
+   --Hareket tablosuna yaz...
+
+   --SP UPDATE
+   CREATE PROC gp_PersonelGuncelle @id int,@ad varchar(20)
+   AS
+   UPDATE Personeller SET Ad=@ad WHERE PerID=@id
+
+   Exec gp_PersonelGuncelle 2,'Isimsiz...'
+
+   ---Saklý procedurler hakkýnda yardým almak için
+   exec sp_help gp_PersonelEkle
+   exec sp_help sp_help
+
+USE Northwind
+exec sp_help v_urunler
+
+-----------
+--FONKSIYONLAR
+SELECT getdate()
+SELECT DAY(getdate())
+SELECT MONTH(getdate())
+SELECT YEAR(getdate())
+
+--Uzunlugu verir
+SELECT LEN(ProductName) FROM Products
+
+SELECT LEFT(ProductName,5) FROM Products
+SELECT RIGHT(ProductName,5) FROM Products
+
+SELECT TRIM(ProductName) FROM Products
+
+SELECT UPPER(ProductName) FROM Products
+SELECT LOWER(ProductName) FROM Products
+
+SELECT UPPER(LEFT(ProductName,1))+ LOWER(RIGHT(ProductName,LEN(ProductName)-1)) FROM Products
+
+--Character fonksiyonlarý...
+SELECT ASCII('A')
+SELECT CHAR(65+32)
+
