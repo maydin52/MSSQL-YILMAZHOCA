@@ -1,0 +1,94 @@
+--Veritabaný taþýma yöntemleri
+--1)Yontem(Tercih edilmemeli)
+--DATA klasoru içerisindeki *.mdf yada *.ldf
+--dosyalarý SQL Server Servici kapatýldýktan sonra alýnabilinir(!!!YAPMA)
+
+--2)Attach-Detach
+--Detach:ayýrma
+--Ýlgili DB uzerinde=>sað týk => Task=>Detach
+--Drop Connection iþaretle...
+--DATA klasorune git ilgili dosyalarý al
+
+--Attach
+--Databases=>Attach=>Add
+
+--3)Yontem Backup alma
+--Ýlgili database uzerinde =>Task => Back Up => ilgili klasoru belirle =>OK
+
+--Restore Backup
+--Databases uzerinde => Restore Database => Device => ... Butona týkla... =>
+--Backup'ý sec => OK =>OK =>OK
+
+--4)Script olusturma...
+--Veritabani üzerinde iken =>Task => Generate Scripts => Set scripting Options => Advanced => Types of Data ="Schema and data"
+-- Next Next
+
+--Açarken (NÞA) Query eDitor ile Ac => F5
+
+--------------------
+USE Northwind
+SELECT * FROM Products
+SELECT * FROM Suppliers
+SELECT * FROM Categories
+--JOINLER
+--Northwind DB
+--1) Products tablosudaki verileri kategori adlarý ile birlikte getiriniz...
+
+SELECT ProductID,ProductName,CategoryName 
+FROM Products,Categories
+WHERE Products.CategoryID = Categories.CategoryID
+
+SELECT ProductID,ProductName,CategoryName 
+FROM Products INNER JOIN Categories
+ON Products.CategoryID = Categories.CategoryID
+
+--2)Kategori Adý 'Seafood' olan urunlerin adýný ve tedarikcilerini getiriniz..
+
+SELECT * 
+FROM  Categories c,Products p,Suppliers s
+WHERE c.CategoryID=p.CategoryID AND p.SupplierID=s.SupplierID AND c.CategoryName='Seafood'
+
+SELECT * 
+FROM  Categories c INNER JOIN Products p
+ON  c.CategoryID=p.CategoryID 
+ INNER JOIN Suppliers s
+ ON p.SupplierID=s.SupplierID 
+ WHERE c.CategoryName='Seafood'
+
+--3) 'Tokyo Traders' firmasýnýn saðladýðý ürünleri kategori adlarýyla fiyata gore azalan þekilde listeleyiniz
+SELECT * 
+FROM  Categories c,Products p,Suppliers s
+WHERE c.CategoryID=p.CategoryID AND p.SupplierID=s.SupplierID AND s.CompanyName='Tokyo Traders'
+ORDER BY UnitPrice DESC
+
+
+SELECT * 
+FROM  Categories c INNER JOIN Products p
+ON  c.CategoryID=p.CategoryID 
+ INNER JOIN Suppliers s
+ ON p.SupplierID=s.SupplierID 
+ WHERE s.CompanyName='Tokyo Traders'
+ ORDER BY UnitPrice DESC
+
+ USE YZL3440_DB
+ SELECT * FROM tbl_Personeller
+ SELECT * FROM tbl_Bolumler
+
+ SELECT * FROM tbl_Personeller p INNER JOIN tbl_Bolumler b
+ ON p.BolumID = b.BolumID
+
+  SELECT * FROM tbl_Personeller p , tbl_Bolumler b
+
+--JOIN Maliyeti
+--USE AdventureWorks2019
+--SELECT * FROM Person.Person,Production.ProductCategory,Production.Product
+
+USE Northwind
+
+SELECT Products.ProductID, Products.ProductName, Categories.CategoryName, Products.UnitPrice
+FROM   Categories INNER JOIN
+             Products ON Categories.CategoryID = Products.CategoryID INNER JOIN
+             Suppliers ON Products.SupplierID = Suppliers.SupplierID
+WHERE (Categories.CategoryName = N'Seafood')
+ORDER BY Products.UnitPrice DESC
+
