@@ -1,0 +1,196 @@
+USE Northwind
+SELECT * FROM Products
+
+--Urun adýnda Chef geçen urunler...
+SELECT * 
+FROM Products
+WHERE ProductName LIKE '%Chef%'
+
+--T ile baþlayan urunler
+SELECT * 
+FROM Products
+WHERE ProductName LIKE 'T%'
+
+--u ile biten urunler
+SELECT * 
+FROM Products
+WHERE ProductName LIKE '%u'
+
+--2.harfi o olan urunler
+SELECT * 
+FROM Products
+WHERE ProductName LIKE '_o%'
+
+--ID si cift olan urunler
+SELECT * FROM Products
+WHERE ProductID % 2 =0
+--ID si tek olan urunler
+SELECT * FROM Products
+WHERE ProductID % 2 =1
+
+--GRUPLAMA
+--Basit Gruplama
+--DISTINCT
+--GROUP BY
+--Detaylý gruplama
+--GROUP BY
+
+--Calisanlarýn unvanlarý
+SELECT DISTINCT Title FROM Employees
+
+SELECT DISTINCT City  FROM Employees
+
+SELECT City  FROM Employees
+GROUP BY City
+
+--DIKKAT
+SELECT *  FROM Employees
+GROUP BY City
+
+--Aggregate functions
+
+--Urunler tablosundaki en dusuk fiyat 
+SELECT MIN(UnitPrice) FROM Products
+
+--Urunler tablosundaki en yuksek fiyat 
+SELECT MAX(UnitPrice) FROM Products
+
+--Urunler tablosundaki ortalama fiyat 
+SELECT AVG(UnitPrice) FROM Products
+SELECT FORMAT(AVG(UnitPrice),'.##') FROM Products
+
+--Urunler tablosundaki toplam fiyat 
+SELECT SUM(UnitPrice) FROM Products
+
+--Urunler tablosunda kac urun var 
+SELECT COUNT(*) FROM Products
+
+SELECT COUNT(UnitPrice) FROM Products
+
+--Ozel Durum
+--Aþagýdaki kodlarýn çalýþabilmesi için Adventureworks veritabani yüklü olmalýdir...
+--Count kullanýmýnda * ile kullanýrsak NULL degerleride sayar... Sutun adi verirsek NULL olanlarý saymaz...
+USE AdventureWorks2019
+
+SELECT * FROM Production.Product 
+SELECT COUNT(*) FROM Production.Product 
+SELECT COUNT(COlor) FROM Production.Product 
+
+--Detaylý gruplama
+USE Northwind
+SELECT * FROM Employees 
+SELECT City,Count(*) FROM Employees
+GROUP BY City
+
+SELECT City,Count(*) KisiSayisi 
+FROM Employees
+GROUP BY City
+ORDER BY KisiSayisi DESC
+
+--Gruplanmýþ veri uzerinde filtreleme...
+--Kisi sayý birden buyuk olan sehirler
+SELECT City,Count(*) KisiSayisi 
+FROM Employees
+GROUP BY City HAVING Count(*) >1
+ORDER BY KisiSayisi DESC
+
+USE YZL3440_DB
+SELECT * FROM Personeller
+--DML(Data Manupulation Language)
+--SELECT 
+--INSERT : Tabloya veri eklemek için kullanýlýr...
+--UPDATE 
+--DELETE
+
+--INSERT
+--1.Yontem
+--Bu kullanýmda tablodaki tum sutunlara veri sýrayla gonderilmelidir...
+--Ozel Durum:IDENTITY, Computed Columns vb...
+SELECT * FROM Personeller
+
+INSERT INTO Personeller VALUES(6,'Derya','Deniz',10000,'IK')
+
+--2.Kullaným
+--Tablo adýndan sonra veri gonderilecek sutunlar belirtilir...
+INSERT INTO Personeller(PerID,Ad,Soyad) VALUES(6,'Derya','Deniz')
+
+--3.Kullaným
+INSERT INTO Personeller(PerID,Ad,Soyad) VALUES(7,'Murat','Kaynak')
+INSERT INTO Personeller(PerID,Ad,Soyad) VALUES(8,'Harun','Aktas')
+
+INSERT INTO Personeller(PerID,Ad,Soyad) VALUES(7,'Murat','Kaynak'),(8,'Harun','Aktas')
+
+--
+SELECT * FROM Personeller 
+UPDATE Personeller SET Maas=7000 
+WHERE Bolum='IK' 
+
+
+UPDATE Personeller SET Maas=6500 
+WHERE Bolum='Satýþ' OR Bolum='Bim'
+
+--NULL 
+UPDATE Personeller SET Bolum='Depocu'
+WHERE Bolum IS NULL
+
+--Bolumu satýs olanlar 25% zam
+UPDATE Personeller SET Maas = Maas + Maas*0.25
+WHERE Bolum ='Satýþ'
+
+SELECT * FROM Personeller
+
+--DELETE 
+DELETE FROM Personeller
+WHERE PerID=1
+
+--DDL(Data Definition Language)
+--Veritabaný nesneleri üzerinde calisir...
+--CREATE :Yeni nesne olusturmak icin kullanýlýr
+--ALTER  :Var olan nesneyi degistirmek icin kullanýlýr
+--DROP   :Var olan nesneyi silmek için kullanýlýr...
+
+CREATE TABLE Musteriler(MusID int , 
+                        Ad varchar(20),
+						Soyad varchar(20),
+						Adres varchar(200))
+
+ALTER TABLE Musteriler
+ ADD Telefon varchar(15)
+
+ SELECT * FROM Musteriler
+
+ ALTER TABLE Musteriler
+ DROP Column Telefon
+
+ DROP TABLE Musteriler
+
+ --IDENTITY
+ --Auto number
+ SELECT * FROM Personeller
+ INSERT INTO Personeller(Ad,Soyad) VALUES('Murat','Kaynak'),('Harun','Aktas')
+ DELETE FROM Personeller
+
+ --DELETE TABLE ile arasýndaki fark;
+ -- IDENTITY degerlerinin ilk hale gelmesidir...
+ -- Sonucta iki komutta tum kayýtlarý siler...
+ TRUNCATE TABLE Personeller
+ 
+
+ --Kod ile IDENTITY olusturma
+ --IDENTITY => 500 den baslar 2 þer 2 þer artar 
+CREATE TABLE Musteriler(MusID int IDENTITY(500,2), 
+                        Ad varchar(20),
+						Soyad varchar(20),
+						Adres varchar(200))
+ 
+ INSERT INTO Musteriler VALUES('Cevdet','Korkmaz','Kadýkoy')
+
+ SELECT * FROM Musteriler
+
+ DROP TABLE Musteriler
+
+ --IDENTITY => 1 den baslar 1 er 1er artar
+ CREATE TABLE Musteriler(MusID int IDENTITY, 
+                        Ad varchar(20),
+						Soyad varchar(20),
+						Adres varchar(200))
