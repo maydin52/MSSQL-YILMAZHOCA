@@ -15,7 +15,7 @@
 
  --T-SQL =>SQL Server da => Transact SQL
  --DML(Data Manupulation Language)
-    --SELECT
+    	--SELECT
 	--INSERT
 	--UPDATE
 	--DELETE
